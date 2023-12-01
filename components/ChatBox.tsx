@@ -32,6 +32,9 @@ export default function ChatBox() {
     return translatedText
   }
 
+  /**
+   * Preview translated messages
+   */
   const previewMessage = async (event) => {
     setTranslatedText('...')
     setReverseTranslatedText('')
@@ -43,9 +46,13 @@ export default function ChatBox() {
     // inputBox.focus();
   }
 
-  // Send Message to the server
-  const sendChatMessage = async (messageText) => {   
+  /**
+   * Send user message to the server
+   */
+  const sendChatMessage = async (messageText) => {
+    // event name
     channel.publish({ name: "chat-message", data: {sourceText: messageText, translatedText: translatedText} });
+
     setMessageText("");
     setTranslatedText("")
     setReverseTranslatedText("")
@@ -57,12 +64,17 @@ export default function ChatBox() {
     sendChatMessage(messageText);
   }
 
+  /**
+   * Textarea Key event
+   */
   const handleKeyPress = (event) => {
+    // If enter key
     if (event.charCode !== 13 || messageTextIsEmpty) {
       return;
     }
-    // sendChatMessage(messageText);
+
     previewMessage(messageText);
+
     event.preventDefault();
   }
 
