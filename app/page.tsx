@@ -14,7 +14,8 @@ export default function Home() {
       </Head>
 
       <main>
-        <h1 className="title">Next.js Chat Demo</h1>
+        <h1 className="title">TraTra Chat</h1>
+        {/* Limitation: Messages are not persistent. Users cannot see the message history. No way to know who is already joining. */}
         <Chat />
       </main>
 
@@ -26,7 +27,9 @@ export default function Home() {
         and
         <a href="https://ably.com" rel="noopener noreferrer">
           <img src="/ably-logo.svg" alt="Ably Logo" className="logo ably" />
-        </a>
+        </a><br />
+
+        {/* top right github logo */}
         <a href="https://github.com/twxxk/tratrachat" className="github-corner" aria-label="View source on GitHub">
           <svg width="80" height="80" viewBox="0 0 250 250" className="svg" aria-hidden="true">
             <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>

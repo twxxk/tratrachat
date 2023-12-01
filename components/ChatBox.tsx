@@ -10,6 +10,8 @@ export default function ChatBox() {
   let messageEnd = null;
 
   const [messageText, setMessageText] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
+  const [reverseTranslatedText, setReverseTranslatedText] = useState("");
   const [receivedMessages, setMessages] = useState([]);
   const messageTextIsEmpty = messageText.trim().length === 0;
 
@@ -18,15 +20,30 @@ export default function ChatBox() {
     setMessages([...history, message]);
   });
 
-  // Send Message to the server
-  const sendChatMessage = async (messageText) => {
+  const translateText = async (messageText) => {
     const query_params = new URLSearchParams({text: messageText}); 
     const translateData = await fetch('/api/deepl?' + query_params)
     const responseText = await translateData.text()
     // console.log(responseText + 'aaz')
     const translatedText = JSON.parse(responseText).text
     // console.log("ab"+translatedText);
-    
+
+    return translatedText
+  }
+
+  const previewMessage = async (event) => {
+    setTranslatedText('...')
+    setReverseTranslatedText('')
+    const translatedText = await translateText(messageText)
+    setTranslatedText(translatedText)
+    const reverseTranslatedText = await translateText(translatedText)
+    setReverseTranslatedText(reverseTranslatedText)
+
+    // inputBox.focus();
+  }
+
+  // Send Message to the server
+  const sendChatMessage = async (messageText) => {   
     channel.publish({ name: "chat-message", data: {sourceText: messageText, translatedText: translatedText} });
     setMessageText("");
     inputBox.focus();
@@ -41,7 +58,8 @@ export default function ChatBox() {
     if (event.charCode !== 13 || messageTextIsEmpty) {
       return;
     }
-    sendChatMessage(messageText);
+    // sendChatMessage(messageText);
+    previewMessage(messageText);
     event.preventDefault();
   }
 
@@ -66,12 +84,18 @@ export default function ChatBox() {
         <textarea
           ref={(element) => { inputBox = element; }}
           value={messageText}
-          placeholder="Type a message..."
+          placeholder="Type a message here..."
           onChange={e => setMessageText(e.target.value)}
           onKeyPress={handleKeyPress}
           className={styles.textarea}
         ></textarea>
-        <button type="submit" className={styles.button} disabled={messageTextIsEmpty}>Send</button>
+        <button type="button" className={styles.button} disabled={messageTextIsEmpty} onClick={previewMessage}>Preview</button>
+        <button type="submit" className={styles.button + ' ' + styles.previewbutton} disabled={messageTextIsEmpty}>Send</button>
+        <textarea
+          value={translatedText + '\n' + reverseTranslatedText}
+          className={styles.previewarea}
+          disabled
+        ></textarea>
       </form>
     </div>
   )
