@@ -18,8 +18,16 @@ export default function ChatBox() {
     setMessages([...history, message]);
   });
 
-  const sendChatMessage = (messageText) => {
-    channel.publish({ name: "chat-message", data: messageText });
+  // Send Message to the server
+  const sendChatMessage = async (messageText) => {
+    const query_params = new URLSearchParams({text: messageText}); 
+    const translateData = await fetch('/api/deepl?' + query_params)
+    const responseText = await translateData.text()
+    // console.log(responseText + 'aaz')
+    const translatedText = JSON.parse(responseText).text
+    // console.log("ab"+translatedText);
+    
+    channel.publish({ name: "chat-message", data: {sourceText: messageText, translatedText: translatedText} });
     setMessageText("");
     inputBox.focus();
   }
@@ -39,7 +47,9 @@ export default function ChatBox() {
 
   const messages = receivedMessages.map((message, index) => {
     const author = message.connectionId === ably.connection.id ? "me" : "other";
-    return <span key={index} className={styles.message} data-author={author}>{message.data}</span>;
+    // console.log(message.data)
+    const {sourceText, translatedText} = message.data;
+    return <span key={index} className={styles.message} data-author={author}>{sourceText}<br />{translatedText}</span>;
   });
 
   useEffect(() => {
