@@ -35,6 +35,7 @@
     font-weight: bold;
     font-size: 1.4em;
     background: linear-gradient(to right, #363795, #005C97);
+    cursor: pointer;
 }
 
 .button:hover {

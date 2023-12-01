@@ -63,11 +63,40 @@ export default function ChatBox() {
     event.preventDefault();
   }
 
+  /**
+   * Currently just send a text
+   */
+  const sendEmoji = async (emojiText) => {
+    channel.publish({ name: "chat-message", data: {sourceText: emojiText} });
+  }
+
+  const handleLike = (event) => {
+    sendEmoji('👍')
+  }
+
+  const handleWatch = (event) => {
+    sendEmoji('👀')
+  }
+
+  /**
+   * show received messages
+   * @param messages {connectionId, data: {sourceText, translatedText, emoji} }
+   */
   const messages = receivedMessages.map((message, index) => {
     const author = message.connectionId === ably.connection.id ? "me" : "other";
     // console.log(message.data)
     const {sourceText, translatedText} = message.data;
-    return <span key={index} className={styles.message} data-author={author}>{sourceText}<br />{translatedText}</span>;
+
+    let html
+    if (translatedText) {
+      html = <span key={index} className={styles.message} data-author={author}>{sourceText}<br />{translatedText}</span>;
+    }
+    else
+    {
+      html = <span key={index} className={styles.message} data-author={author}>{sourceText}</span>;
+    }
+
+    return html
   });
 
   useEffect(() => {
@@ -96,6 +125,8 @@ export default function ChatBox() {
           className={styles.previewarea}
           disabled
         ></textarea>
+        <button type="button" className={styles.button} onClick={handleLike}>👍</button>
+        <button type="button" className={styles.button} onClick={handleWatch}>👀</button>
       </form>
     </div>
   )
