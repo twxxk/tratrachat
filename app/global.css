@@ -59,6 +59,15 @@ body {
     height: 100px;
   }
 
+  footer a {
+    color: #222;
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
+  }
+
   .logo {
     display: block;
     height: 20px;

@@ -20,14 +20,15 @@ export default function Home() {
       </main>
 
       <footer>
-        Powered by
-        <a href="https://vercel.com" target="_blank" rel="noopener noreferrer">
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
+        Powered by&nbsp;
+        <a href="https://vercel.com" target="_blank" rel="noopener noreferrer">Vercel</a>
+        ,&nbsp;
+        <a href="https://ably.com" target="_blank" rel="noopener noreferrer">Ably</a>
+        &nbsp;and&nbsp;
+        <a href="https://www.deepl.com/" target="_blank" rel="noopener noreferrer">
+          DeepL
         </a>
-        and
-        <a href="https://ably.com" rel="noopener noreferrer">
-          <img src="/ably-logo.svg" alt="Ably Logo" className="logo ably" />
-        </a><br />
+        .<br />
 
         {/* top right github logo */}
         <a href="https://github.com/twxxk/tratrachat" className="github-corner" aria-label="View source on GitHub">
