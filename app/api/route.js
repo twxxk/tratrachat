@@ -1,6 +1,6 @@
 import Ably from "ably/promises";
 
-// export const runtime = 'edge';
+// export const runtime = 'edge'; // got error
 export const revalidate = 0;
 
 export async function GET(request) {
