@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
 
+const ablyChannelName = 'tratrachat'
+const ablyEventName = 'chat-message'
+
 export default function ChatBox() {
 
   let inputBox = null;
@@ -16,11 +19,21 @@ export default function ChatBox() {
   const messageTextIsEmpty = messageText.trim().length === 0;
   const reverseTranslatedTextIsEmpty = reverseTranslatedText.trim().length === 0;
 
-  const { channel, ably } = useChannel("chat-demo", (message) => {
+  /**
+   * Get message history from ably
+   * channel name = chat-demo
+   */
+  // console.log(`[?rewind=100]${ablyChannelName}`)
+  const { channel, ably } = useChannel(`[?rewind=100]${ablyChannelName}`, (message) => {
+    // https://ably.com/tutorials/how-to-ably-react-hooks#tutorial-step-4
+    // https://ably.com/docs/channels/options/rewind
     const history = receivedMessages.slice(-199);
     setMessages([...history, message]);
   });
 
+  /**
+   * Translate with deepl
+   */
   const translateText = async (messageText) => {
     const query_params = new URLSearchParams({text: messageText}); 
     const translateData = await fetch('/api/deepl?' + query_params)
@@ -50,8 +63,7 @@ export default function ChatBox() {
    * Send user message to the server
    */
   const sendChatMessage = async (messageText) => {
-    // event name
-    channel.publish({ name: "chat-message", data: {sourceText: messageText, translatedText: translatedText} });
+    channel.publish({ name: ablyEventName, data: {sourceText: messageText, translatedText: translatedText} });
 
     setMessageText("");
     setTranslatedText("")
@@ -82,7 +94,7 @@ export default function ChatBox() {
    * Currently just send a text
    */
   const sendEmoji = async (emojiText) => {
-    channel.publish({ name: "chat-message", data: {sourceText: emojiText} });
+    channel.publish({ name: ablyEventName, data: {sourceText: emojiText} });
   }
 
   const handleLike = (event) => {
@@ -115,10 +127,8 @@ export default function ChatBox() {
   });
 
   // https://github.com/ably-labs/ably-nextjs-fundamentals-kit/blob/main/app/presence/presence-client.tsx
-  const { presenceData, updateStatus } = usePresence("room", {'status':'available'}, (member) => {
-    // action: 'enter' or 'leave'
-    // `action: ${member.action} clientId: ${member.clientId}`
-  });
+  // https://ably.com/tutorials/how-to-ably-react-hooks
+  const { presenceData } = usePresence(ablyChannelName);
 
   // Making sure the focus is on the latest message
   useEffect(() => {
@@ -161,7 +171,7 @@ export default function ChatBox() {
           const prefix = index !== 0 ? ', ' : ''
           const user = member.connectionId + (member.connectionId === ably.connection.id ? "(me)" : '');
 
-          return (<>{prefix}<span className="" key={member.id}>{user}</span></>)
+          return (<span className="" key={member.id}>{prefix}{user}</span>)
         })}
       </div>
     </div>
