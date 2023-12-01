@@ -14,6 +14,7 @@ export default function ChatBox() {
   const [reverseTranslatedText, setReverseTranslatedText] = useState("");
   const [receivedMessages, setMessages] = useState([]);
   const messageTextIsEmpty = messageText.trim().length === 0;
+  const reverseTranslatedTextIsEmpty = reverseTranslatedText.trim().length === 0;
 
   const { channel, ably } = useChannel("chat-demo", (message) => {
     const history = receivedMessages.slice(-199);
@@ -130,8 +131,8 @@ export default function ChatBox() {
           onKeyPress={handleKeyPress}
           className={styles.textarea}
         ></textarea>
-        <button type="button" className={styles.button} disabled={messageTextIsEmpty} onClick={previewMessage}>Preview</button>
-        <button type="submit" className={styles.button + ' ' + styles.previewbutton} disabled={messageTextIsEmpty}>Send</button>
+        <button type="button" className={styles.button} disabled={messageTextIsEmpty} onClick={previewMessage} title="Preview translations before sending your message">TraTra</button>
+        <button type="submit" className={styles.button + ' ' + styles.previewbutton} disabled={reverseTranslatedTextIsEmpty}>Send</button>
         <textarea
           value={translatedText + '\n' + reverseTranslatedText}
           className={styles.previewarea}
