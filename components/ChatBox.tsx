@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { useChannel } from "ably/react"
+import { useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
 
 export default function ChatBox() {
@@ -24,7 +24,7 @@ export default function ChatBox() {
     const query_params = new URLSearchParams({text: messageText}); 
     const translateData = await fetch('/api/deepl?' + query_params)
     const responseText = await translateData.text()
-    // console.log(responseText + 'aaz')
+    // console.log(responseText + 'aaa')
     const translatedText = JSON.parse(responseText).text
     // console.log("ab"+translatedText);
 
@@ -46,6 +46,8 @@ export default function ChatBox() {
   const sendChatMessage = async (messageText) => {   
     channel.publish({ name: "chat-message", data: {sourceText: messageText, translatedText: translatedText} });
     setMessageText("");
+    setTranslatedText("")
+    setReverseTranslatedText("")
     inputBox.focus();
   }
 
@@ -80,11 +82,11 @@ export default function ChatBox() {
 
   /**
    * show received messages
-   * @param messages {connectionId, data: {sourceText, translatedText, emoji} }
+   * @param messages {data: {sourceText, translatedText}, connectionId, clientId, id, name, data, timestamp }
    */
   const messages = receivedMessages.map((message, index) => {
+    // console.log(message)
     const author = message.connectionId === ably.connection.id ? "me" : "other";
-    // console.log(message.data)
     const {sourceText, translatedText} = message.data;
 
     let html
@@ -99,16 +101,26 @@ export default function ChatBox() {
     return html
   });
 
+  // https://github.com/ably-labs/ably-nextjs-fundamentals-kit/blob/main/app/presence/presence-client.tsx
+  const { presenceData, updateStatus } = usePresence("room", {'status':'available'}, (member) => {
+    // action: 'enter' or 'leave'
+    // `action: ${member.action} clientId: ${member.clientId}`
+  });
+
+  // Making sure the focus is on the latest message
   useEffect(() => {
     messageEnd.scrollIntoView({ behaviour: "smooth" });
   });
 
   return (
     <div className={styles.chatHolder}>
+      {/* Chat Log Area */}
       <div className={styles.chatText}>
         {messages}
         <div ref={(element) => { messageEnd = element; }}></div>
       </div>
+
+      {/* UI Controls */}
       <form onSubmit={handleFormSubmission} className={styles.form}>
         <textarea
           ref={(element) => { inputBox = element; }}
@@ -128,6 +140,17 @@ export default function ChatBox() {
         <button type="button" className={styles.button} onClick={handleLike}>👍</button>
         <button type="button" className={styles.button} onClick={handleWatch}>👀</button>
       </form>
+
+      {/* Active Member List */}
+      <div>
+        <strong>Members:</strong>&nbsp;
+        {presenceData.map((member, index: number) => {
+          const prefix = index !== 0 ? ', ' : ''
+          const user = member.connectionId + (member.connectionId === ably.connection.id ? "(me)" : '');
+
+          return (<>{prefix}<span className="" key={member.id}>{user}</span></>)
+        })}
+      </div>
     </div>
   )
 }
