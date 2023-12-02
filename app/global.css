@@ -26,7 +26,7 @@ body {
     background-color: #eee;
   }
 
-  main {
+  main.chat {
     display: grid;
     grid-template-rows: auto 1fr;
     width: calc(100% - 40px);
