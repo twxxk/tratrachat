@@ -1,44 +1,17 @@
 import { Metadata } from "next";
-import Link from 'next/link';
-import { useRouter } from 'next/navigation'
 
-import { nanoid } from 'nanoid'
-import { useState } from "react";
+import ThreadSelection from "../components/ThreadSelection";
 
-// export const metadata: Metadata = {
-//   title: "TraTra Chat - Realtime Chat with translations",
-// };
+export const metadata: Metadata = {
+  title: "TraTra Chat - Realtime Chat with translations",
+};
 
 export default function RootPage() {
-//   const uniqueId = nanoid()
-  const uniqueId = "test"
-
-//   const router = useRouter()
-//   const [threadId, setThreadId] = useState("");
-
-//   const handleFormSubmission = (event) => {
-//     event.preventDefault();
-
-//     // start with the new Id if not specified
-//     if (!threadId) setThreadId(uniqueId)
-
-//     router.push('/chat/' + threadId)
-//   }
-
   return (
     <div className="container">
       <main>
         <h1 className="title">TraTra Chat</h1>
-        {/* Current Limitation: Messages are not persistent. Users cannot see the message history. */}
-        <Link href={'/chat/' + uniqueId}>Test Chat</Link>
-
-      {/* <form action={handleFormSubmission}>
-        <input 
-          value={threadId}
-          placeholder="Thread ID"
-        />
-        <button type="submit">Join</button>
-      </form> */}
+        <ThreadSelection />
       </main>
 
       <footer>

@@ -4,10 +4,13 @@ import React, { KeyboardEvent, useEffect, useState } from 'react';
 import { useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
 
-const ablyChannelName = 'tratrachat'
+const ablyChannelNamespace = 'tratrachat'
 const ablyEventName = 'chat-message'
 
-export default function ChatBox() {
+export default function ChatBox(params: { threadId: string }) {
+  const threadId = params.threadId
+  // console.log('threadId=', threadId)
+  const ablyChannelName = ablyChannelNamespace + ':' + threadId
 
   let inputBox = null;
   let messageEnd = null;
