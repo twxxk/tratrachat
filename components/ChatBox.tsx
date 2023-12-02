@@ -10,8 +10,9 @@ const ablyEventName = 'chat-message'
 export default function ChatBox(params: { threadId: string }) {
   const threadId = params.threadId
   // console.log('threadId=', threadId)
-  const ablyChannelName = ablyChannelNamespace + ':' + threadId
-
+  // const ablyChannelName = ablyChannelNamespace + ':' + threadId
+  const ablyChannelName = ablyChannelNamespace
+  
   let inputBox = null;
   let messageEnd = null;
 
