@@ -31,6 +31,23 @@ export default function ChatBox() {
     setMessages([...history, message]);
   });
 
+  // https://zenn.dev/qaynam/articles/c4794537a163d2
+  useEffect(() => {
+    const ablyCloser = () => {
+      console.log('ably closer is called. state=' + ably.connection.state);
+      if (ably && ably.connection.state === "connected" ) {
+        console.log('closing connected ably.');
+        ably.close();
+      }
+    };
+  
+    window.addEventListener('beforeunload', ablyCloser);
+    return () => {
+      ablyCloser(); // may not need this
+      window.removeEventListener('beforeunload', ablyCloser);
+    };
+  }, []);
+  
   /**
    * Translate with deepl
    */
