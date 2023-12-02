@@ -50,6 +50,10 @@ body {
     background: linear-gradient(to right, #363795, #005C97);
   }
 
+  .title a {
+    color: white;
+  }
+
   footer {
     display: flex;
     justify-content: center;

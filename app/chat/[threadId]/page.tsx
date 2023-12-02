@@ -1,6 +1,9 @@
 import { Metadata } from "next";
 
 import dynamic from 'next/dynamic';
+import Link from "next/link";
+// import { nanoid } from 'nanoid'
+// model.id = nanoid()
 
 const Chat = dynamic(() => import('../../../components/Chat'), {
   ssr: false,
@@ -10,11 +13,14 @@ export const metadata: Metadata = {
   title: "TraTra Chat - Realtime Chat with translations",
 };
 
-export default function Home() {
+export default function ChatPage({ params }: { params: { threadId: string } }) {
+  const threadId = params.threadId;
+
   return (
     <div className="container">
       <main>
-        <h1 className="title">TraTra Chat</h1>
+        <h1 className="title"><Link href="/">TraTra Chat</Link> 
+        &nbsp; {threadId}</h1>
         {/* Current Limitation: Messages are not persistent. Users cannot see the message history. */}
         <Chat />
       </main>
