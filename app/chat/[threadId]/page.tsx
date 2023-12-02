@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import dynamic from 'next/dynamic';
 import Link from "next/link";
 
-const Chat = dynamic(() => import('../../../components/Chat'), {
+const Chat = dynamic(() => import('../../../components/Chat.jsx'), {
   ssr: false,
 })
 

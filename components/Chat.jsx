@@ -5,11 +5,11 @@ import * as Ably from 'ably'
 import { AblyProvider } from 'ably/react'
 import ChatBox from './ChatBox'
 
-export default function Chat(params: { threadId: string }) {
+export default function Chat(params) {
   const threadId = params.threadId
   // console.log(threadId)
 
-  const client = new Ably.Realtime.Promise({ authUrl: '/api/ably' })
+  const client = Ably.Realtime.Promise({ authUrl: '/api/ably' })
 
   return (
     <AblyProvider client={ client }>
