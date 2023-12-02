@@ -1,3 +1,4 @@
+// You can ignore warnings https://github.com/jaredwray/keyv/issues/45
 import Ably from "ably/promises";
 
 // export const runtime = 'edge'; // It does not seem Ably work with edge functions
