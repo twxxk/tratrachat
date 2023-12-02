@@ -7,7 +7,7 @@ const Chat = dynamic(() => import('../components/Chat'), {
 })
 
 export const metadata: Metadata = {
-  title: "Tra Tra Chat - Realtime Chat with translations",
+  title: "TraTra Chat - Realtime Chat with translations",
 };
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
     <div className="container">
       <main>
         <h1 className="title">TraTra Chat</h1>
-        {/* Limitation: Messages are not persistent. Users cannot see the message history. No way to know who is already joining. */}
+        {/* Current Limitation: Messages are not persistent. Users cannot see the message history. */}
         <Chat />
       </main>
 

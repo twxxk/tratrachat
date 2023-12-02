@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { KeyboardEvent, useEffect, useState } from 'react';
 import { useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
 
@@ -20,11 +20,11 @@ export default function ChatBox() {
   const reverseTranslatedTextIsEmpty = reverseTranslatedText.trim().length === 0;
 
   /**
-   * Get message history from ably
-   * channel name = chat-demo
+   * Get message history (max=100) from ably, but it does not work for some reason
+   * https://ably.com/blog/channel-rewind
    */
   // console.log(`[?rewind=100]${ablyChannelName}`)
-  const { channel, ably } = useChannel(`[?rewind=100]${ablyChannelName}`, (message) => {
+  const { channel, ably } = useChannel(`[?rewind=1]${ablyChannelName}`, (message) => {
     // https://ably.com/tutorials/how-to-ably-react-hooks#tutorial-step-4
     // https://ably.com/docs/channels/options/rewind
     const history = receivedMessages.slice(-199);
@@ -96,13 +96,20 @@ export default function ChatBox() {
   /**
    * Textarea Key event
    */
-  const handleKeyPress = (event) => {
-    // If enter key
-    if (event.charCode !== 13 || messageTextIsEmpty) {
+  const handleKeyPress = (event:KeyboardEvent) => {
+    // If not enter key or shift-enter, do anything
+    if (event.charCode !== 13 || messageTextIsEmpty || event.shiftKey) {
       return;
     }
 
-    previewMessage(messageText);
+    if (event.ctrlKey) {
+      // hidden feature - send directly with ctrl + enter
+      sendChatMessage(messageText); 
+    }
+    else {
+      // translate first
+      previewMessage(messageText);
+    }
 
     event.preventDefault();
   }
