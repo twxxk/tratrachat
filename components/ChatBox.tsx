@@ -20,8 +20,10 @@ export default function ChatBox(params: { threadId: string }) {
   const [translatedText, setTranslatedText] = useState("");
   const [reverseTranslatedText, setReverseTranslatedText] = useState("");
   const [receivedMessages, setMessages] = useState([]);
+
   const messageTextIsEmpty = messageText.trim().length === 0;
-  const reverseTranslatedTextIsEmpty = reverseTranslatedText.trim().length === 0;
+  const [lastPreviewedText, setLastPreviewedText] = useState("");
+  const currentMessageIsPreviewed = !messageTextIsEmpty && messageText === lastPreviewedText
 
   /**
    * Get message history (max=100) from ably, but it does not work for some reason
@@ -39,10 +41,10 @@ export default function ChatBox(params: { threadId: string }) {
   useEffect(() => {
     const ablyCloser = () => {
       console.log('ably closer is called. state=' + ably.connection.state);
-      if (ably && ably.connection.state === "connected" ) {
-        console.log('closing connected ably.');
-        ably.close();
-      }
+      // if (ably && ably.connection.state === "connected" ) {
+      //   console.log('closing connected ably.');
+      //   ably.close();
+      // }
     };
   
     window.addEventListener('beforeunload', ablyCloser);
@@ -57,6 +59,7 @@ export default function ChatBox(params: { threadId: string }) {
    */
   const translateText = async (messageText) => {
     const query_params = new URLSearchParams({text: messageText}); 
+
     const translateData = await fetch('/api/deepl?' + query_params)
     const responseText = await translateData.text()
     // console.log(responseText + 'aaa')
@@ -70,6 +73,11 @@ export default function ChatBox(params: { threadId: string }) {
    * Preview translated messages
    */
   const previewMessage = async (event) => {
+    if (messageText.trim().length === 0) {
+      console.log('no message to preview')
+      return false;
+    }
+
     setTranslatedText('...')
     setReverseTranslatedText('')
     const translatedText = await translateText(messageText)
@@ -77,7 +85,7 @@ export default function ChatBox(params: { threadId: string }) {
     const reverseTranslatedText = await translateText(translatedText)
     setReverseTranslatedText(reverseTranslatedText)
 
-    // inputBox.focus();
+    setLastPreviewedText(messageText)
   }
 
   /**
@@ -101,6 +109,9 @@ export default function ChatBox(params: { threadId: string }) {
    * Textarea Key event
    */
   const handleKeyPress = (event:KeyboardEvent) => {
+    // console.log(messageText, messageTextIsEmpty)
+    // console.log(`last=${lastPreviewedText} now=${messageText}`)
+
     // If not enter key or shift-enter, do anything
     if (event.charCode !== 13 || messageTextIsEmpty || event.shiftKey) {
       return;
@@ -181,8 +192,9 @@ export default function ChatBox(params: { threadId: string }) {
           onKeyPress={handleKeyPress}
           className={styles.textarea}
         ></textarea>
-        <button type="button" className={styles.button} disabled={messageTextIsEmpty} onClick={previewMessage} title="Preview translations before sending your message">TraTra</button>
-        <button type="submit" className={styles.button + ' ' + styles.previewbutton} disabled={reverseTranslatedTextIsEmpty}>Send</button>
+        {/* Preview before Send */}
+        <button type="button" className={styles.button} disabled={currentMessageIsPreviewed} onClick={previewMessage} title="Preview translations before sending your message">TraTra</button>
+        <button type="submit" className={styles.button + ' ' + styles.previewbutton} disabled={!currentMessageIsPreviewed}>Send</button>
         <textarea
           value={translatedText + '\n' + reverseTranslatedText}
           className={styles.previewarea}
