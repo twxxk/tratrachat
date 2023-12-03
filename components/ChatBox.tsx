@@ -117,7 +117,7 @@ export default function ChatBox(params: { threadId: string }) {
       return;
     }
 
-    if (event.ctrlKey) {
+    if (currentMessageIsPreviewed || event.ctrlKey) {
       // hidden feature - send directly with ctrl + enter
       sendChatMessage(messageText); 
     }
