@@ -8,6 +8,9 @@ const config = {
     // https://dagashi.pw/react18-useeffect-twice/
     // Stop mounting components twice rather than once in the dev mode. Comment out if you would like to verfity more
     reactStrictMode: false,
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    // ignoreDuringBuilds: true,    
 }
 
 module.exports = config
