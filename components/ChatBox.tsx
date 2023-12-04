@@ -39,18 +39,22 @@ export default function ChatBox(params: { threadId: string }) {
 
   // https://zenn.dev/qaynam/articles/c4794537a163d2
   useEffect(() => {
+    // https://dagashi.pw/react18-useeffect-twice/
+     console.log('mounting ChatBox')
+
     const ablyCloser = () => {
       console.log('ably closer is called. state=' + ably.connection.state);
-      // if (ably && ably.connection.state === "connected" ) {
-      //   console.log('closing connected ably.');
-      //   ably.close();
-      // }
+      if (ably && ably.connection.state === "connected" ) {
+        console.log('closing connected ably.');
+        ably.close();
+      }
     };
   
-    window.addEventListener('beforeunload', ablyCloser);
+    // window.addEventListener('beforeunload', ablyCloser);
     return () => {
+      console.log('unmounting ChatBox')
       ablyCloser(); // may not need this
-      window.removeEventListener('beforeunload', ablyCloser);
+      // window.removeEventListener('beforeunload', ablyCloser);
     };
   }, []);
   
