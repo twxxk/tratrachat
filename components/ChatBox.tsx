@@ -188,11 +188,11 @@ export default function ChatBox(params: { threadId: string }) {
   const messages = receivedMessages.map((message, index) => {
     // console.log(message)
     const isMyMessage = message.connectionId === ably.connection.id
-    // const author = isMyMessage ? "me" : "other";
+    const author = isMyMessage ? "me" : `${message.clientId}(${message.connectionId})`;
     const {sourceText, translatedText} = message.data;
    
     let sep = translatedText ? <br /> : ''
-    // const timeString = new Date(message.timestamp).toLocaleString()
+    const timeString = new Date(message.timestamp).toLocaleString()
     // const messageWrapperClassName = isMyMessage ? styles.myMessageWrapper : styles.messageWrapper 
     const messageClassName = isMyMessage ? styles.myMessage : styles.message
 
@@ -203,7 +203,7 @@ export default function ChatBox(params: { threadId: string }) {
     //   <span key={index} className={styles.time}>{timeString}</span>
     // </span>
     return <>
-      <span key={index} className={messageClassName} title={message.clientId + ' ' + message.connectionId}>
+      <span key={index} className={messageClassName} title={`${timeString} by ${author}`}>
         {sourceText}{sep}{translatedText}
       </span>
     </>
