@@ -3,6 +3,7 @@
 const { uniqueNamesGenerator, languages, animals } = require('unique-names-generator');
 
 import { useState, useEffect } from 'react';
+import styles from './UserSettings.module.css'
 
 export const userNameKey = 'userName'
 
@@ -70,9 +71,9 @@ export default function UserSessingsBox() {
 
     return (
         <>
-            Your Name:
-            <form action={handleFormSubmission}>
-                <input type="text" id="name" name="name" defaultValue={userName} />
+            <h2 className={styles.nameTitle}>1. Configure Your Name</h2>
+            <form action={handleFormSubmission} className={styles.settingsForm}>
+                Name: <input type="text" id="name" name="name" defaultValue={userName} />
                 <button type="submit">Save</button>
             </form>
         </>

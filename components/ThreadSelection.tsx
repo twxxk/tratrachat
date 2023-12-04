@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import { nanoid } from 'nanoid'
 import { FormEvent } from 'react';
+import styles from './ThreadSelection.module.css'
 
 // https://stackoverflow.com/questions/59976409/next-js-using-random-properties-without-triggering-did-not-match-on-server-cli
 export async function getServerSideProps() {
@@ -25,12 +26,14 @@ export default async function ThreadSelection() {
 
     return (
         <div>
-            <h2><Link href='/chat/test'>Join Test Room</Link></h2>
-            <br />
-            <h2>
-                {/* Disable prefetching for the random link to reduce the chat room creation */}
-                <a href={randomRoomLink}>Create New Room</a>
-            </h2>
+            <h2>2. Join Chat Room</h2>
+            <ul className={styles.threads}>
+                <li><Link href='/chat/test'>Test Room</Link></li>
+                <li>
+                    {/* Disable prefetching for the random link to reduce the chat room creation */}
+                    <a href={randomRoomLink}>Create New Room</a>
+                </li>
+            </ul>
             {/* <form action={handleFormSubmission}>
                 <input type="text"
                     id="threadId" name="threadId"

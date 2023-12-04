@@ -1,0 +1,13 @@
+/* UserSettings */
+.nameTitle {
+    font-weight: bold;
+    font-size: 150%;
+}
+
+.settingsForm {
+    margin-bottom: 2em;
+}
+
+.settingsForm input, .settingsForm button {
+    font-size: 150%;
+}
