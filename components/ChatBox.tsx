@@ -3,7 +3,6 @@
 import React, { KeyboardEvent, useEffect, useState } from 'react';
 import { useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
-import Link from 'next/link';
 
 const ablyChannelNamespace = 'tratrachat'
 const ablyEventName = 'chat-message'
@@ -12,7 +11,6 @@ export default function ChatBox(params: { threadId: string }) {
   const threadId = params.threadId
   // console.log('threadId=', threadId)
   const ablyChannelName = ablyChannelNamespace + ':' + threadId
-  // const ablyChannelName = ablyChannelNamespace
   
   let inputBox = null;
   let messageEnd = null;
@@ -160,11 +158,11 @@ export default function ChatBox(params: { threadId: string }) {
 
     let html
     if (translatedText) {
-      html = <span key={index} className={styles.message} data-author={author}>{sourceText}<br />{translatedText}</span>;
+      html = <span key={index} className={styles.message} data-author={author}>{message.clientId + message.connectionId + sourceText}<br />{translatedText}</span>;
     }
     else
     {
-      html = <span key={index} className={styles.message} data-author={author}>{sourceText}</span>;
+      html = <span key={index} className={styles.message} data-author={author}>{message.clientId + message.connectionId + sourceText}</span>;
     }
 
     return html
@@ -220,9 +218,13 @@ export default function ChatBox(params: { threadId: string }) {
           <strong>Members:</strong>&nbsp;
           {presenceData.map((member, index: number) => {
             const prefix = index !== 0 ? ', ' : ''
-            const user = member.connectionId + (member.connectionId === ably.connection.id ? "(me)" : '');
-
-            return (<span className="" key={member.id}>{prefix}{user}</span>)
+            const user = member.clientId + (member.connectionId === ably.connection.id ? "(me)" : '');
+            return (
+              <span className="" key={member.id}>
+                {prefix}
+                <span title={'connectionId=' + member.connectionId}>{user}</span>
+              </span>
+            )
           })}
         </div>
         <div>

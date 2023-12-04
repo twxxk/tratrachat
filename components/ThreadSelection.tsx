@@ -1,16 +1,19 @@
-'use client'
-
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import { nanoid } from 'nanoid'
 import { FormEvent } from 'react';
 
-export default function ThreadSelection() {
-  const uniqueId = nanoid()
+// https://stackoverflow.com/questions/59976409/next-js-using-random-properties-without-triggering-did-not-match-on-server-cli
+export async function getServerSideProps() {
+    return { uniqueId: nanoid() }
+}
 
-  const router = useRouter()
+export default async function ThreadSelection() {
+  const props = await getServerSideProps()
+  const randomRoomLink = '/chat/' + props.uniqueId
 
-  // The attendee should be shared the chat URL from others
+//   const router = useRouter()
+//  The attendee should be shared the chat URL from others
 //   const handleFormSubmission = (formData: FormData) => {
 //     let threadId = formData.get("threadId");
 
@@ -22,10 +25,12 @@ export default function ThreadSelection() {
 
     return (
         <div>
-            {/* Current Limitation: Messages are not persistent. Users cannot see the message history. */}
             <h2><Link href='/chat/test'>Join Test Room</Link></h2>
             <br />
-            <h2><Link href={'/chat/' + uniqueId}>Create New Room</Link></h2>
+            <h2>
+                {/* Disable prefetching for the random link to reduce the chat room creation */}
+                <a href={randomRoomLink}>Create New Room</a>
+            </h2>
             {/* <form action={handleFormSubmission}>
                 <input type="text"
                     id="threadId" name="threadId"

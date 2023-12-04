@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 import ThreadSelection from "../components/ThreadSelection";
+import UserSettingsBox from "../components/UserSettings"
 
 export const metadata: Metadata = {
   title: "TraTra Chat - Realtime Chat with translations",
@@ -11,6 +12,8 @@ export default function RootPage() {
     <div className="container">
       <main>
         <h1 className="title">TraTra Chat</h1>
+        <UserSettingsBox />
+        <hr />
         <ThreadSelection />
       </main>
 
