@@ -47,7 +47,7 @@ export function useUserName() {
         }
         else
         {
-            console.log('got value=' + res)
+            console.log('got userName=' + res)
             setValue(res);   
         }
     }, []);

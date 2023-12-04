@@ -1,7 +1,7 @@
 'use client'
 
 import React, { KeyboardEvent, useEffect, useState } from 'react';
-import { useChannel, usePresence } from "ably/react"
+import { ChannelParameters, useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
 
 const ablyChannelNamespace = process.env.ABLY_NAMESPACE || 'tratrachat';
@@ -29,16 +29,16 @@ export default function ChatBox(params: { threadId: string }) {
   const [lastPreviewedText, setLastPreviewedText] = useState("");
   const currentMessageIsPreviewed = !messageTextIsEmpty && messageText === lastPreviewedText
 
-  /**
-   * Get message history (max=100) from ably, but it does not work for some reason
-   * https://ably.com/blog/channel-rewind
-   */
-  // console.log(`[?rewind=100]${ablyChannelName}`)
-  const { channel, ably } = useChannel(`[?rewind=1]${ablyChannelName}`, (message) => {
-    // https://ably.com/tutorials/how-to-ably-react-hooks#tutorial-step-4
-    // https://ably.com/docs/channels/options/rewind
-    const history = receivedMessages.slice(-199);
-    setMessages([...history, message]);
+  // https://github.com/ably-labs/ably-nextjs-fundamentals-kit/blob/main/app/presence/presence-client.tsx
+  // https://ably.com/tutorials/how-to-ably-react-hooks
+  const { presenceData } = usePresence(ablyChannelName);
+  // const presenceData = []; // only for debug
+
+  // Making sure the focus is on the latest message
+  useEffect(() => {
+    if (!messageEnd)
+      return;
+    messageEnd.scrollIntoView({ behaviour: "smooth" });
   });
 
   // https://zenn.dev/qaynam/articles/c4794537a163d2
@@ -60,8 +60,37 @@ export default function ChatBox(params: { threadId: string }) {
       ablyCloser(); // may not need this
       // window.removeEventListener('beforeunload', ablyCloser);
     };
-  }, []);
-  
+  }, []); 
+
+  // console.log(`[?rewind=100]${ablyChannelName}`)
+  // XXX [?rewind=10] does not work for some reason
+  // channel.setOptions({params: {rewind: '10'}})
+  // const options:ChannelParameters = {channelName: `${ablyChannelName}`, options: {params: {rewind: '10'}}}
+  const options:ChannelParameters = {channelName: ablyChannelName}
+  const { channel, ably } = useChannel(options,
+  (message) => {
+    // handler for new messages
+    // https://ably.com/tutorials/how-to-ably-react-hooks#tutorial-step-4
+    // https://ably.com/docs/channels/options/rewind
+    // console.log(message)
+    const history = receivedMessages.slice(-199);
+    setMessages([...history, message]);
+  });
+  // XXX channel or ably might be Error - need to handle https://ably.com/docs/getting-started/react#error-handling
+
+  const [isHistoryCalled, setIsHistoryCalled] = useState(false)
+  const func = (paginatedResult) => {
+    if (isHistoryCalled) {
+      return;
+    }
+    setIsHistoryCalled(true);
+    // console.log('len=' + paginatedResult.items.length);
+    setMessages(paginatedResult.items);
+  }
+  channel.history({limit: 10}).then(func).catch((err) => {
+    console.log('err to get channel history', err)
+  })
+
   /**
    * Translate with deepl
    */
@@ -158,34 +187,26 @@ export default function ChatBox(params: { threadId: string }) {
    */
   const messages = receivedMessages.map((message, index) => {
     // console.log(message)
-    const author = message.connectionId === ably.connection.id ? "me" : "other";
+    const isMyMessage = message.connectionId === ably.connection.id
+    // const author = isMyMessage ? "me" : "other";
     const {sourceText, translatedText} = message.data;
+   
+    let sep = translatedText ? <br /> : ''
+    // const timeString = new Date(message.timestamp).toLocaleString()
+    // const messageWrapperClassName = isMyMessage ? styles.myMessageWrapper : styles.messageWrapper 
+    const messageClassName = isMyMessage ? styles.myMessage : styles.message
 
-    let html
-    if (translatedText) {
-      html = <span key={index} className={styles.message} data-author={author} title={message.clientId}>
-          {sourceText}
-          <br />
-          {translatedText}
-        </span>;
-    }
-    else
-    {
-      html = <span key={index} className={styles.message} data-author={author} title={message.clientId}>
-          {sourceText}
-        </span>;
-    }
-
-    return html
-  });
-
-  // https://github.com/ably-labs/ably-nextjs-fundamentals-kit/blob/main/app/presence/presence-client.tsx
-  // https://ably.com/tutorials/how-to-ably-react-hooks
-  const { presenceData } = usePresence(ablyChannelName);
-
-  // Making sure the focus is on the latest message
-  useEffect(() => {
-    messageEnd.scrollIntoView({ behaviour: "smooth" });
+    // return <span key={index} className={messageWrapperClassName}>
+    //   <span key={index} className={messageClassName} title={message.clientId}>
+    //     {sourceText}{sep}{translatedText}
+    //   </span>
+    //   <span key={index} className={styles.time}>{timeString}</span>
+    // </span>
+    return <>
+      <span key={index} className={messageClassName} title={message.clientId + ' ' + message.connectionId}>
+        {sourceText}{sep}{translatedText}
+      </span>
+    </>
   });
 
   return (
