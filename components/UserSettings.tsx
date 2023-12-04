@@ -1,32 +1,28 @@
 'use client'
 
-import names from 'random-names-generator'
+const { uniqueNamesGenerator, languages, animals } = require('unique-names-generator');
+
 import { useState, useEffect } from 'react';
 
 export const userNameKey = 'userName'
 
-// export function getUserName():string {
-//     if (typeof window != 'undefined')
-//         return localStorage.getItem(userNameKey) || names.random()
-// }
-
-// export function setUserName(userName:string) {
-//     if (typeof window != 'undefined')
-//         localStorage.setItem(userNameKey, userName)
-// }
+function generateDefaultUserName() {
+    // 'JapaneseDragon'
+    return uniqueNamesGenerator({ dictionaries: [languages, animals], style: 'capital', separator: '' });
+}
 
 // https://kajindowsxp.com/next-js-localstorage/
 export function useUserName() {
     const key: string = userNameKey
-    const defaultValue: string = names.random()
-    
+    const defaultValue:string = generateDefaultUserName()
+
     const [value, setValue] = useState<string>("");
 
     const setValueAndStorage = (newValue: string) => {
-        console.log('saving the value ' + newValue + `${typeof window}`)
+        // console.log('saving the value ' + newValue + `${typeof window}`)
         if (typeof window !== 'undefined') {
             window.localStorage.setItem(key, newValue);
-            console.log('new value is saved')
+            // console.log('new value is saved')
         }
         setValue(newValue);
     };
@@ -34,7 +30,7 @@ export function useUserName() {
     useEffect(() => {
         const res = window.localStorage.getItem(key);
         if (!res) {
-            console.log("local storage is empty. setting defaultValue" + defaultValue);
+            // console.log("local storage is empty. setting defaultValue" + defaultValue);
             setValueAndStorage(defaultValue)
         }
         console.log('got value=' + res)
@@ -51,9 +47,14 @@ export default function UserSessingsBox() {
     const {userName, setUserName} = useUserName();
 
     const handleFormSubmission = (formData: FormData) => {
-        let userName:string = formData.get("name").toString()
-
-        setUserName(userName)
+        let userNameValue:string = formData.get("name").toString()
+        if (userNameValue.length === 0) {
+            // hidden feature - reset name 
+            // XXX need to refresh
+            userNameValue = generateDefaultUserName()
+            formData.set('name', userNameValue)
+        }
+        setUserName(userNameValue)
     }
 
     return (
