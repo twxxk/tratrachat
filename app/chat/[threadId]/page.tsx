@@ -9,7 +9,7 @@ const Chat = dynamic(() => import('../../../components/Chat.jsx'), {
 })
 
 export const metadata: Metadata = {
-  title: "TraTra Chat - Realtime Chat with translations",
+  title: "TraTraChat - Realtime Chat with translations",
 };
 
 export default function ChatPage({ params }: { params: { threadId: string } }) {

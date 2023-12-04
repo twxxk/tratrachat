@@ -20,15 +20,15 @@ export function getUserName() {
   if (typeof window != 'undefined')
     return window.localStorage.getItem('userName');
 
-  return 'guest';
+  return '';
 }
 
 // https://kajindowsxp.com/next-js-localstorage/
 export function useUserName() {
-    const key: string = userNameKey
+    const key:string = userNameKey
     const defaultValue:string = generateDefaultUserName()
 
-    const [value, setValue] = useState<string>("");
+    const [value, setValue] = useState<string>(getUserName());
 
     const setValueAndStorage = (newValue: string) => {
         // console.log('saving the value ' + newValue + `${typeof window}`)
@@ -42,11 +42,14 @@ export function useUserName() {
     useEffect(() => {
         const res = window.localStorage.getItem(key);
         if (!res) {
-            // console.log("local storage is empty. setting defaultValue" + defaultValue);
+            console.log("local storage is empty. setting defaultValue=" + defaultValue);
             setValueAndStorage(defaultValue)
         }
-        // console.log('got value=' + res)
-        setValue(res);
+        else
+        {
+            console.log('got value=' + res)
+            setValue(res);   
+        }
     }, []);
 
     return { userName:value, setUserName:setValueAndStorage };

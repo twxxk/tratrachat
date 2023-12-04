@@ -4,7 +4,7 @@ import React, { KeyboardEvent, useEffect, useState } from 'react';
 import { useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
 
-const ablyChannelNamespace = 'tratrachat'
+const ablyChannelNamespace = process.env.ABLY_NAMESPACE || 'tratrachat';
 const ablyEventName = 'chat-message'
 
 export function shareUrl() {

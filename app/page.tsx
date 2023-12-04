@@ -5,15 +5,19 @@ import UserSettingsBox from "../components/UserSettings"
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: "TraTra Chat - Realtime Chat with translations",
+  title: "TraTraChat - Realtime Chat with translations",
 };
 
 export default function RootPage() {
   return (
     <div className="container">
       <main>
-        <h1 className="title">TraTra Chat</h1>
+        <h1 className="title">TraTraChat</h1>
         <div className={styles.rootMenu}>
+          <p>
+            TraTraChat improves the quality of realtime chat between English speakers and Non-English speakers
+            by previewing the translation and reverse-translation before sending messages.<br />
+          </p>
           <UserSettingsBox />
           <ThreadSelection />
         </div>
