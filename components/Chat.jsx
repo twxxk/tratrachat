@@ -4,16 +4,14 @@
 import * as Ably from 'ably'
 import { AblyProvider } from 'ably/react'
 import ChatBox from './ChatBox'
-import { useUserName } from './UserSettings'
+import { getUserName } from './UserSettings'
 
 export default function Chat(params) {
   const threadId = params.threadId
-  // console.log(threadId)
-  // XXX useEffectが呼ばれる前にこの関数は戻ってきて、ユーザー名が空文字列になる可能性がある。それによりpresenceに悪影響。
-  const {userName} = useUserName();
+  const userName = getUserName()
 
   // https://ably.com/docs/auth/token?lang=nodejs
-  console.log('calling api. username=' + userName);
+  // console.log('calling api. username=' + userName);
   const client = Ably.Realtime.Promise({ authUrl: '/api/ably', authParams: {userName: userName} })
 
   return (

@@ -11,6 +11,17 @@ function generateDefaultUserName() {
     return uniqueNamesGenerator({ dictionaries: [languages, animals], style: 'capital', separator: '' });
 }
 
+/**
+ * Use useUserName() if you want to update
+ */
+export function getUserName() {
+  // const {userName} = useUserName();
+  if (typeof window != 'undefined')
+    return window.localStorage.getItem('userName');
+
+  return 'guest';
+}
+
 // https://kajindowsxp.com/next-js-localstorage/
 export function useUserName() {
     const key: string = userNameKey
@@ -33,7 +44,7 @@ export function useUserName() {
             // console.log("local storage is empty. setting defaultValue" + defaultValue);
             setValueAndStorage(defaultValue)
         }
-        console.log('got value=' + res)
+        // console.log('got value=' + res)
         setValue(res);
     }, []);
 

@@ -13,7 +13,7 @@ const defaultClientId = 'guest'
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const userName = searchParams.get('userName') || defaultClientId;
-   console.log(`userName=${userName}`)
+  //  console.log(`userName=${userName}`)
  
   // https://ably.com/docs/auth/identified-clients
   const tokenRequestData = await client.auth.createTokenRequest({ clientId: userName });
