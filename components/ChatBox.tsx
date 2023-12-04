@@ -79,15 +79,18 @@ export default function ChatBox(params: { threadId: string }) {
   // XXX channel or ably might be Error - need to handle https://ably.com/docs/getting-started/react#error-handling
 
   const [isHistoryCalled, setIsHistoryCalled] = useState(false)
-  const func = (paginatedResult) => {
+  const handleHistory = (paginatedResult) => {
     if (isHistoryCalled) {
       return;
     }
     setIsHistoryCalled(true);
+
     // console.log('len=' + paginatedResult.items.length);
-    setMessages(paginatedResult.items);
+    // direction:backwards gets the latest message as the first item
+    // stable reverse
+    setMessages(paginatedResult.items.slice().reverse());
   }
-  channel.history({limit: 10}).then(func).catch((err) => {
+  channel.history({limit: 10}).then(handleHistory).catch((err) => {
     console.log('err to get channel history', err)
   })
 

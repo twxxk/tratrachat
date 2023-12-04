@@ -72,6 +72,8 @@
     border-radius: 10px;
     flex-grow: 0;
     border-bottom-left-radius: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 .myMessage {
     background: linear-gradient(to right, #363795, #005C97); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
