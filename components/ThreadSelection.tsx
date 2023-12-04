@@ -10,31 +10,29 @@ export default function ThreadSelection() {
 
   const router = useRouter()
 
-  const handleFormSubmission = (formData: FormData) => {
-    let threadId = formData.get("threadId");
+  // The attendee should be shared the chat URL from others
+//   const handleFormSubmission = (formData: FormData) => {
+//     let threadId = formData.get("threadId");
 
-    // start with the new Id if not specified
-    if (!threadId) threadId = uniqueId
+//     // start with the new Id if not specified
+//     if (!threadId) threadId = uniqueId
 
-    router.push('/chat/' + threadId)
-  }
+//     router.push('/chat/' + threadId)
+//   }
 
     return (
-        <>
+        <div>
             {/* Current Limitation: Messages are not persistent. Users cannot see the message history. */}
-            <h2><Link href='/chat/test'>Join Test Chat Room</Link></h2>
+            <h2><Link href='/chat/test'>Join Test Room</Link></h2>
             <br />
-            &lt;-- (work in progress)<br />
-            <Link href={'/chat/' + uniqueId}>New Chat</Link>
-            <br />
-            <form action={handleFormSubmission}>
+            <h2><Link href={'/chat/' + uniqueId}>Create New Room</Link></h2>
+            {/* <form action={handleFormSubmission}>
                 <input type="text"
                     id="threadId" name="threadId"
                     placeholder="Thread ID"
                 />
                 <button type="submit">Join</button>
-            </form>
-            --&gt;
-        </>
+            </form> */}
+        </div>
     )
 }

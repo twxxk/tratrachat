@@ -3,6 +3,7 @@
 import React, { KeyboardEvent, useEffect, useState } from 'react';
 import { useChannel, usePresence } from "ably/react"
 import styles from './ChatBox.module.css';
+import Link from 'next/link';
 
 const ablyChannelNamespace = 'tratrachat'
 const ablyEventName = 'chat-message'
@@ -169,6 +170,11 @@ export default function ChatBox(params: { threadId: string }) {
     return html
   });
 
+  const showUrl = () => {
+    const message = 'Share this URL with other attendees'
+    prompt(message, location.href)
+  }
+
   // https://github.com/ably-labs/ably-nextjs-fundamentals-kit/blob/main/app/presence/presence-client.tsx
   // https://ably.com/tutorials/how-to-ably-react-hooks
   const { presenceData } = usePresence(ablyChannelName);
@@ -209,14 +215,19 @@ export default function ChatBox(params: { threadId: string }) {
       </form>
 
       {/* Active Member List */}
-      <div>
-        <strong>Members:</strong>&nbsp;
-        {presenceData.map((member, index: number) => {
-          const prefix = index !== 0 ? ', ' : ''
-          const user = member.connectionId + (member.connectionId === ably.connection.id ? "(me)" : '');
+      <div className={styles.membersWrapper}>
+        <div>
+          <strong>Members:</strong>&nbsp;
+          {presenceData.map((member, index: number) => {
+            const prefix = index !== 0 ? ', ' : ''
+            const user = member.connectionId + (member.connectionId === ably.connection.id ? "(me)" : '');
 
-          return (<span className="" key={member.id}>{prefix}{user}</span>)
-        })}
+            return (<span className="" key={member.id}>{prefix}{user}</span>)
+          })}
+        </div>
+        <div>
+          <button onClick={showUrl}>Share</button>
+        </div>
       </div>
     </div>
   )
