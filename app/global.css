@@ -54,6 +54,11 @@ body {
     color: white;
   }
 
+  .title .threadName {
+    font-size: 60%;
+    cursor: pointer;
+  }
+
   footer {
     display: flex;
     justify-content: center;

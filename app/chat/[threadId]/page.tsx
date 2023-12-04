@@ -2,6 +2,7 @@ import { Metadata } from "next";
 
 import dynamic from 'next/dynamic';
 import Link from "next/link";
+import {shareUrl} from "../../../components/ChatBox"
 
 const Chat = dynamic(() => import('../../../components/Chat.jsx'), {
   ssr: false,
@@ -17,8 +18,11 @@ export default function ChatPage({ params }: { params: { threadId: string } }) {
   return (
     <div className="container">
       <main className="chat">
-        <h1 className="title"><Link href="/">TraTra Chat</Link> 
-        &nbsp; {threadId}</h1>
+        <h1 className="title">
+          <Link href="/">TraTra Chat</Link> 
+          &nbsp; 
+          <span className="threadName" onClick={shareUrl}>{threadId}</span>
+          </h1>
         {/* Current Limitation: Messages are not persistent. Users cannot see the message history. */}
         <Chat threadId={threadId} />
       </main>

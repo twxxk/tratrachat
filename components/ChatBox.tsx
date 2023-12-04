@@ -7,6 +7,11 @@ import styles from './ChatBox.module.css';
 const ablyChannelNamespace = 'tratrachat'
 const ablyEventName = 'chat-message'
 
+export function shareUrl() {
+  const message = 'Share this URL with other attendees'
+  prompt(message, location.href)
+}
+
 export default function ChatBox(params: { threadId: string }) {
   const threadId = params.threadId
   // console.log('threadId=', threadId)
@@ -158,20 +163,21 @@ export default function ChatBox(params: { threadId: string }) {
 
     let html
     if (translatedText) {
-      html = <span key={index} className={styles.message} data-author={author}>{message.clientId + message.connectionId + sourceText}<br />{translatedText}</span>;
+      html = <span key={index} className={styles.message} data-author={author} title={message.clientId}>
+          {sourceText}
+          <br />
+          {translatedText}
+        </span>;
     }
     else
     {
-      html = <span key={index} className={styles.message} data-author={author}>{message.clientId + message.connectionId + sourceText}</span>;
+      html = <span key={index} className={styles.message} data-author={author} title={message.clientId}>
+          {sourceText}
+        </span>;
     }
 
     return html
   });
-
-  const showUrl = () => {
-    const message = 'Share this URL with other attendees'
-    prompt(message, location.href)
-  }
 
   // https://github.com/ably-labs/ably-nextjs-fundamentals-kit/blob/main/app/presence/presence-client.tsx
   // https://ably.com/tutorials/how-to-ably-react-hooks
@@ -228,7 +234,7 @@ export default function ChatBox(params: { threadId: string }) {
           })}
         </div>
         <div>
-          <button onClick={showUrl}>Share</button>
+          <button onClick={shareUrl}>Share</button>
         </div>
       </div>
     </div>
