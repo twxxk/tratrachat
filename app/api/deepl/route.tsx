@@ -6,6 +6,8 @@ import { NextRequest } from 'next/server';
 const authKey = process.env.DEEPL_AUTH_KEY;
 
 /**
+ * API for Web app
+ * 
  * @param req 
  * @returns {text: string, detectedSourceLang}
  */
@@ -22,8 +24,7 @@ export async function GET(req: NextRequest) {
   // const sourceLange:deepl.SourceLanguageCode = includesJapanese ? 'ja' : 'en';
   
   const translater = new deepl.Translator(authKey);
-  let responseData;
-  responseData = await translater.translateText(textToTranslate, null, targetLang);
+  const responseData = await translater.translateText(textToTranslate, null, targetLang);
   // console.log(responseData);
 
   return Response.json(responseData);

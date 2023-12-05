@@ -22,8 +22,7 @@ export default function ChatPage({ params }: { params: { threadId: string } }) {
           <Link href="/">TraTra Chat</Link> 
           &nbsp; 
           <span className="threadName" onClick={shareUrl}>{threadId}</span>
-          </h1>
-        {/* Current Limitation: Messages are not persistent. Users cannot see the message history. */}
+        </h1>
         <Chat threadId={threadId} />
       </main>
 
